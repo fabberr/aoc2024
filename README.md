@@ -2,7 +2,7 @@
 
 Solutions for [Advent of Code 2024](https://adventofcode.com/2024) puzzles written in C++.
 
-# Solutions
+## Solutions
 
 Solutions are implemented by creating a new C++ source file in `src/solutions` and implementing the two functions declared `include/aoc2024/solution.hpp`, one for each of the day's puzzles. The inputs for the day should be placed in a text file located in `src/input`.
 
@@ -14,7 +14,7 @@ The program accepts the following arguments:
 
 A sample implementation is provided in `src/solutions/day00.cpp` and `src/input/day00.txt`.
 
-# Building
+## Building
 
 To build the solution, use the following compiler arguments:
 - Note: Only ONE file implementing `solution.hpp` should be compiled.
@@ -23,7 +23,7 @@ To build the solution, use the following compiler arguments:
 $ mkdir -p build; g++ -std=c++23 -Iinclude -o build/dayXX ./src/main.cpp ./src/solutions/dayXX.cpp
 ```
 
-# Automation
+## Automation
 
 `aoc2024.sh` is a shell script for automating the process of implementing and running solutions. The script will create all the necessary files/targets for building and running new solutions. Note that the script was designed to use paths relative to the root directory of the repository and will refuse to run if called from elsewhere.
 
