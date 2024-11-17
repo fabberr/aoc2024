@@ -29,7 +29,7 @@ $ mkdir -p build; g++ -std=c++23 -Iinclude -o build/dayXX ./src/main.cpp ./src/s
 
 The script accepts two commands:
 - `new <solution>`: Adds a new solution by creating an empty input file and the source file implementing `solution.hpp`. Two new Make targets will be added. one for building the solution and the other for running it.
-- `run <solution> [args]`: Runs the specified solution with the specified command line arguments. If the executable is not found, the solution will be built. 
+- `run <solution> [args]`: Runs a solution with the specified command line arguments. If the executable is not found, the solution will be built. 
 
 Example usage:
 
