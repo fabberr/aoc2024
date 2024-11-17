@@ -38,8 +38,8 @@ Example usage:
 $ chmod u+x ./aoc2024.sh
 
 # To create a new solution (e.g. Day 1 of the event):
-$ ./aoc2024.sh new day00
+$ ./aoc2024.sh new day01
 
 # To build and run the first puzzle of the solution:
-$ ./aoc2024.sh run day00 a
+$ ./aoc2024.sh run day01 a
 ```
