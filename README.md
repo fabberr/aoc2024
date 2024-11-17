@@ -28,8 +28,8 @@ $ mkdir -p build; g++ -std=c++23 -Iinclude -o build/dayXX ./src/main.cpp ./src/s
 `aoc2024.sh` is a shell script for automating the process of implementing and running solutions. The script will create all the necessary files/targets for building and running new solutions. Note that the script was designed to use paths relative to the root directory of the repository and will refuse to run if called from elsewhere.
 
 The script accepts two commands:
-- `new <solution>`: Adds a new solution by creating an empty input file and the source file implementing `solution.hpp`. Two new Make targets will be added. one for building the solution and the other for running it.
-- `run <solution> [args]`: Runs a solution with the specified command line arguments. If the executable is not found, the solution will be built. 
+- `new <solution>`: Adds a new solution by creating an empty input file and the source file implementing `solution.hpp`. Two new Make targets will also be added: one for building the solution and another for running it.
+- `run <solution> [args]`: Runs a solution with the specified command line arguments. If the executable is not found, the solution will be built.
 
 Example usage:
 
