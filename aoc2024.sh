@@ -26,29 +26,30 @@ new_solution() {
 
 auto aoc2024::solve_a(std::istream& input_stream) -> void {
     for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
-        // @todo: Implement solution for part one of the puzzle
+        // @todo: Implement solution for first puzzle
     }
 }
 
 auto aoc2024::solve_b(std::istream& input_stream) -> void {
     for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
-        // @todo: Implement solution for part two of the puzzle
+        // @todo: Implement solution for second puzzle
     }
 }
 EOF
 
     # Create Makefile targets, if needed
-    build_target_name="\$(BUILD_DIR)/${solution_name}"
-    build_prerequisites="${source_dir}/main.cpp ${solution_dir}/${solution_name}.cpp"
-
     if cat "./Makefile" | grep -qE "${solution_name}:"; then
         return
     fi
+
+    build_target_name="\$(BUILD_DIR)/${solution_name}"
+    build_prerequisites="${source_dir}/main.cpp ${solution_dir}/${solution_name}.cpp"
 
     cat << EOF >> "./Makefile"
 
 # Build target ${solution_name}
 $build_target_name: $build_prerequisites
+	mkdir -p \$(BUILD_DIR)
 	\$(CPP) \$(CPP_FLAGS) -o \$@ \$^
 
 # Run target ${solution_name}

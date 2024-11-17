@@ -13,6 +13,7 @@ clean:
 
 # Build target day00
 $(BUILD_DIR)/day00: ./src/main.cpp ./src/solutions/day00.cpp
+	mkdir -p $(BUILD_DIR)
 	$(CPP) $(CPP_FLAGS) -o $@ $^
 
 # Run target day00
