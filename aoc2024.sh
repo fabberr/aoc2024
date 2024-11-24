@@ -57,8 +57,8 @@ EOF
 
 run_solution() {
     # Parameters
-    local solution_name="$1"
-    local args="$2"
+    local solution_name="$1"; shift
+    local args="$@"
 
     make --silent ARGS="$args" "run-${solution_name}"
 }
@@ -85,7 +85,7 @@ case "$COMMAND" in
         shift
         ;;
     "$COMMAND_TYPE_RUN")
-        run_solution "$SOLUTION_NAME" "$3"
+        run_solution "$SOLUTION_NAME" "${@:3}"
         shift
         ;;
     *)
