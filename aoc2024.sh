@@ -18,23 +18,23 @@ new_solution() {
     # Create source file
     mkdir -p "$solution_dir"
 
-    cat << EOF > "$solution_dir/${solution_name}.cpp"
-#include <aoc2024/solution.hpp>
+    cat <<- EOF > "$solution_dir/${solution_name}.cpp"
+	#include <aoc2024/solution.hpp>
 
-#include <string>
-#include <iostream>
+	#include <string>
+	#include <iostream>
 
-auto aoc2024::solve_a(std::istream& input_stream) -> void {
-    for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
-        // @todo: Implement solution for first puzzle
-    }
-}
+	auto aoc2024::solve_a(std::istream& input_stream) -> void {
+	    for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
+	        // @todo: Implement solution for first puzzle
+	    }
+	}
 
-auto aoc2024::solve_b(std::istream& input_stream) -> void {
-    for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
-        // @todo: Implement solution for second puzzle
-    }
-}
+	auto aoc2024::solve_b(std::istream& input_stream) -> void {
+	    for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
+	        // @todo: Implement solution for second puzzle
+	    }
+	}
 EOF
 
     # Create Makefile targets, if needed
@@ -45,17 +45,14 @@ EOF
     build_target_name="\$(BUILD_DIR)/${solution_name}"
     build_prerequisites="${source_dir}/main.cpp ${solution_dir}/${solution_name}.cpp"
 
-    cat << EOF >> "./Makefile"
+    printf "\n# Build target ${solution_name}\n"                    >> "./Makefile"
+    printf "%s: %s\n" "$build_target_name" "$build_prerequisites" >> "./Makefile"
+    printf "\tmkdir -p \$(BUILD_DIR)\n"                           >> "./Makefile"
+    printf "\t\$(CPP) \$(CPP_FLAGS) -o \$@ \$^\n"                 >> "./Makefile"
 
-# Build target ${solution_name}
-$build_target_name: $build_prerequisites
-	mkdir -p \$(BUILD_DIR)
-	\$(CPP) \$(CPP_FLAGS) -o \$@ \$^
-
-# Run target ${solution_name}
-run-${solution_name}: $build_target_name
-	\$< src/input/day00.txt \$(ARGS)
-EOF
+    printf "\n# Run target ${solution_name}\n"          >> "./Makefile"
+    printf "run-${solution_name}: $build_target_name\n" >> "./Makefile"
+    printf "\t\$< src/input/day00.txt \$(ARGS)\n"       >> "./Makefile"
 }
 
 run_solution() {
