@@ -45,7 +45,7 @@ EOF
     build_target_name="\$(BUILD_DIR)/${solution_name}"
     build_prerequisites="${source_dir}/main.cpp ${solution_dir}/${solution_name}.cpp"
 
-    printf "\n# Build target ${solution_name}\n"                    >> "./Makefile"
+    printf "\n# Build target ${solution_name}\n"                  >> "./Makefile"
     printf "%s: %s\n" "$build_target_name" "$build_prerequisites" >> "./Makefile"
     printf "\tmkdir -p \$(BUILD_DIR)\n"                           >> "./Makefile"
     printf "\t\$(CPP) \$(CPP_FLAGS) -o \$@ \$^\n"                 >> "./Makefile"
