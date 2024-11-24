@@ -1,11 +1,79 @@
 #!/usr/bin/env sh
 
 ################################################################################
+############################### CONTROL VARIABLES ##############################
+################################################################################
+
+# Version
+SCRIPT_NAME="aoc2024.sh"
+SCRIPT_VERSION="$SCRIPT_NAME v1.2.0"
+
+# Command Type Enum
+COMMAND_TYPE_NEW="new"
+COMMAND_TYPE_RUN="run"
+
+################################################################################
 ################################## FUNCTIONS ###################################
 ################################################################################
 
 # Summary:
-#     Cretes a new solution.
+#     Prints help information to stdout.
+print_help() {
+    cat <<- EOF
+	NAME
+	    $SCRIPT_NAME - Create, build and run solutions for Advent of Code 2024
+	    puzzles written in C++.
+
+	SYNOPSIS
+	    $SCRIPT_NAME [options] <command> <solution> [args]
+
+	    $SCRIPT_NAME new <solution>
+	    $SCRIPT_NAME run <solution> [args]
+
+	OPTIONS
+	    --version, -v
+	        Displays the version of the script and exits.
+
+	    --help, -h, -?, ?
+	        Displays this help message and exits.
+
+	COMMANDS
+	    new <solution>
+	        Creates a new solution with the specified name.
+
+	        Arguments:
+
+	            <solution> (required)
+	                The name of the solution to create.
+
+	        This will generate:
+
+	            1. A new C++ file implementing \`include/aoc2024/solution.hpp\`
+	               under the \`src/solutions/\` directory.
+
+	            2. An empty input file under the \`src/input/\` directory.
+
+	            3. Make targets for building and running the new solution.
+	               If the targets already exist, this step is skipped.
+
+	    run <solution> [args]
+	        Runs the specified solution. The solution must exist.
+
+	        Arguments:
+
+	            <solution> (required)
+	                The name of the solution to execute.
+
+	            [args] (optional)
+	                Additional arguments to be forwarded to the solution.
+
+	AUTHORS
+	    Fabrício Milanez (https://github.com/fabberr)
+	EOF
+}
+
+# Summary:
+#     Creates a new solution with the specified name.
 #
 # Arguments:
 #     $1 - solution_name
@@ -83,17 +151,6 @@ run_solution() {
 }
 
 ################################################################################
-############################### CONTROL VARIABLES ##############################
-################################################################################
-
-# Version
-SCRIPT_VERSION="aoc2024.sh v1.1.0"
-
-# Command Type Enum
-COMMAND_TYPE_NEW="new"
-COMMAND_TYPE_RUN="run"
-
-################################################################################
 ################### EXTRACT AND PARSE COMMAND LINE ARGUMENTS ###################
 ################################################################################
 
@@ -105,6 +162,10 @@ fi
 case "$1" in
     --version|-v)
         echo "$SCRIPT_VERSION"
+        exit 0
+        ;;
+    --help|-h|-?|?)
+        print_help
         exit 0
         ;;
     "$COMMAND_TYPE_NEW")
