@@ -1,5 +1,15 @@
 #!/usr/bin/env sh
 
+################################################################################
+################################## FUNCTIONS ###################################
+################################################################################
+
+# Summary:
+#     Cretes a new solution.
+#
+# Arguments:
+#     $1 - solution_name
+#         The name of the new solution.
 new_solution() {
 
     # Parameters
@@ -35,7 +45,7 @@ new_solution() {
 	        // @todo: Implement solution for second puzzle
 	    }
 	}
-EOF
+	EOF
 
     # Create Makefile targets, if needed
     if cat "./Makefile" | grep -qE "${solution_name}:"; then
@@ -55,6 +65,15 @@ EOF
     printf "\t\$< src/input/day00.txt \$(ARGS)\n"       >> "./Makefile"
 }
 
+# Summary:
+#     Runs the specified solution. The solution must exist.
+#
+# Arguments:
+#     $1 - solution_name
+#         The name of the solution to execute.
+#
+#     @:2 - args
+#         The command line arguments to forward to the solution, if any.
 run_solution() {
     # Parameters
     local solution_name="$1"; shift
@@ -63,32 +82,49 @@ run_solution() {
     make --silent ARGS="$args" "run-${solution_name}"
 }
 
+################################################################################
+############################### CONTROL VARIABLES ##############################
+################################################################################
+
+# Version
+SCRIPT_VERSION="aoc2024.sh v1.1.0"
+
 # Command Type Enum
 COMMAND_TYPE_NEW="new"
 COMMAND_TYPE_RUN="run"
 
-if [ $# -lt 2 ]; then
-    echo "Usage: $0 <command> <solution> [args]"
-    exit 1
-fi
+################################################################################
+################### EXTRACT AND PARSE COMMAND LINE ARGUMENTS ###################
+################################################################################
 
 if [ ! -d "src" ]; then
     echo "Error: The script must be executed from the root directory."
     exit 1
 fi
-COMMAND="$1";
-SOLUTION_NAME="$2";
 
-case "$COMMAND" in
+case "$1" in
+    --version|-v)
+        echo "$SCRIPT_VERSION"
+        exit 0
+        ;;
     "$COMMAND_TYPE_NEW")
-        new_solution "$SOLUTION_NAME"
+        if [ $# -lt 2 ]; then
+            echo "Usage: $0 $COMMAND_TYPE_NEW <solution>"
+            exit 1
+        fi
+        new_solution "$2"
         shift
         ;;
     "$COMMAND_TYPE_RUN")
-        run_solution "$SOLUTION_NAME" "${@:3}"
+        if [ $# -lt 2 ]; then
+            echo "Usage: $0 $COMMAND_TYPE_RUN <solution> [args]"
+            exit 1
+        fi
+        run_solution "$2" "${@:3}"
         shift
         ;;
     *)
         echo "Unrecognized command '$1'."
         exit 1
+        ;;
 esac
