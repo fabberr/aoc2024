@@ -1,14 +1,14 @@
 /**
  * File: day00.cpp
  * 
- * This is a sample source file that implements solution.hpp
+ * This is a sample source file implementing `solution.hpp`
 */
 #include <aoc2024/solution.hpp>
 
 #include <string>
 #include <iostream>
 #include <print>
-#include <stack>
+#include <ranges>
 
 auto aoc2024::solve_a(std::istream& input_stream) -> void {
     for (std::string line{}; std::getline(input_stream, line, '\n') and line != ""; ) {
@@ -17,14 +17,10 @@ auto aoc2024::solve_a(std::istream& input_stream) -> void {
 }
 
 auto aoc2024::solve_b(std::istream& input_stream) -> void {
-    auto stack = std::stack<std::string>();
-
     for (std::string line{}; std::getline(input_stream, line, '\n') and line != ""; ) {
-        stack.push(line);
-    }
-
-    while (not stack.empty()) {
-        std::println("{}", stack.top());
-        stack.pop();
+        for (auto ch : line | std::views::reverse) {
+            std::print("{}", ch);
+        }
+        std::println();
     }
 }
