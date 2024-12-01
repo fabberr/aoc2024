@@ -16,12 +16,12 @@ A sample implementation is provided in `src/solutions/day00.cpp`, with its input
 
 ## Building
 
-To build the solution, use the following compiler flags: `-std=c++23 -Iinclude`
+To build the solution, use the following compiler flags: `-std=c++26 -Iinclude`
 - Note: Only ONE implementation of `solution.hpp` should be provided.
 
 ```bash
 # Ensure output directory exists and build the solution
-$ mkdir -p build; g++ -std=c++23 -Iinclude -o build/dayXX ./src/main.cpp ./src/solutions/dayXX.cpp
+$ mkdir -p build; g++ -std=c++26 -Iinclude -o build/dayXX ./src/main.cpp ./src/solutions/dayXX.cpp
 ```
 
 ## Automation
