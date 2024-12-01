@@ -6,7 +6,7 @@
 
 # Version
 SCRIPT_NAME="aoc2024.sh"
-SCRIPT_VERSION="$SCRIPT_NAME v1.2.0"
+SCRIPT_VERSION="$SCRIPT_NAME v1.2.1"
 
 # Command Type Enum
 COMMAND_TYPE_NEW="new"
@@ -130,7 +130,7 @@ new_solution() {
 
     printf "\n# Run target ${solution_name}\n"          >> "./Makefile"
     printf "run-${solution_name}: $build_target_name\n" >> "./Makefile"
-    printf "\t\$< src/input/day00.txt \$(ARGS)\n"       >> "./Makefile"
+    printf "\t\$< src/input/${solution_name}.txt \$(ARGS)\n"       >> "./Makefile"
 }
 
 # Summary:
