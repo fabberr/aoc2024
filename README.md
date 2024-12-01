@@ -16,7 +16,7 @@ A sample implementation is provided in `src/solutions/day00.cpp`, with its input
 
 ## Building
 
-To build the solution, use the following compiler flags: `-std=c++26 -Iinclude`
+To build a solution, use the following compiler flags: `-std=c++26 -Iinclude`
 - Note: Only ONE implementation of `solution.hpp` should be provided.
 
 ```bash
