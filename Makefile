@@ -1,5 +1,5 @@
 CPP=/usr/bin/g++
-CPP_STANDARD=-std=c++23
+CPP_STANDARD=-std=c++26
 CPP_OPTIMIZATION_LEVEL=-O3
 CPP_WARNING=-Wall -Wextra -Wconversion -Wpedantic -Wshadow
 CPP_INCLUDE=-Iinclude
