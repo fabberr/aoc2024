@@ -128,9 +128,9 @@ new_solution() {
     printf "\tmkdir -p \$(BUILD_DIR)\n"                           >> "./Makefile"
     printf "\t\$(CPP) \$(CPP_FLAGS) -o \$@ \$^\n"                 >> "./Makefile"
 
-    printf "\n# Run target ${solution_name}\n"          >> "./Makefile"
-    printf "run-${solution_name}: $build_target_name\n" >> "./Makefile"
-    printf "\t\$< src/input/${solution_name}.txt \$(ARGS)\n"       >> "./Makefile"
+    printf "\n# Run target ${solution_name}\n"                  >> "./Makefile"
+    printf "run-${solution_name}: $build_target_name\n"         >> "./Makefile"
+    printf "\t\$< src/input/${solution_name}.txt \$(ARGS)\n"    >> "./Makefile"
 }
 
 # Summary:
