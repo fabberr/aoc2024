@@ -19,3 +19,12 @@ $(BUILD_DIR)/day00: ./src/main.cpp ./src/solutions/day00.cpp
 # Run target day00
 run-day00: $(BUILD_DIR)/day00
 	$< src/input/day00.txt $(ARGS)
+
+# Build target day01
+$(BUILD_DIR)/day01: ./src/main.cpp ./src/solutions/day01.cpp
+	mkdir -p $(BUILD_DIR)
+	$(CPP) $(CPP_FLAGS) -o $@ $^
+
+# Run target day01
+run-day01: $(BUILD_DIR)/day01
+	$< src/input/day01.txt $(ARGS)
