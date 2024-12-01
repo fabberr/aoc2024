@@ -6,7 +6,7 @@
 
 # Version
 SCRIPT_NAME="aoc2024.sh"
-SCRIPT_VERSION="$SCRIPT_NAME v1.2.3"
+SCRIPT_VERSION="$SCRIPT_NAME v1.2.4"
 
 # Command Type Enum
 COMMAND_TYPE_NEW="new"
@@ -101,8 +101,15 @@ new_solution() {
 
 	#include <string>
 	#include <iostream>
+	#include <print>
+	#include <algorithm>
+	#include <ranges>
+	#include <utility>
 
-	static constexpr auto AOC_INPUT_SIZE = 1000z;
+	#include <cstddef>
+	#include <cstdint>
+
+	static constexpr std::size_t AOC_INPUT_SIZE = 1000uz;
 
 	auto aoc2024::solve_a(std::istream& input_stream) -> void {
 	    for (std::string line{}; std::getline(input_stream, line, '\\n') and line != ""; ) {
