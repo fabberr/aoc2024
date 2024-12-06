@@ -8,9 +8,14 @@
 #include <algorithm>
 #include <ranges>
 #include <expected>
+#include <optional>
 #include <system_error>
 #include <print>
 #include <array>
+#include <vector>
+#include <regex>
+#include <charconv>
+#include <numeric>
 
 #include <cstddef>
 #include <cstdint>
@@ -18,76 +23,133 @@
 
 using namespace std::string_view_literals;
 
-static constexpr std::size_t AOC_INPUT_SIZE = 1uz;
+static constexpr std::size_t AOC_INPUT_SIZE = 6uz;
 
-enum class binary_operator_t : char {
+enum class arithmetic_operator : char {
     none = '\0',
     multiply = '*',
 };
 
-struct operands_t {
-    std::int32_t x = {};
-    std::int32_t y = {};
-};
+typedef struct operands {
+    std::int32_t lhs = {};
+    std::int32_t rhs = {};
+} operands_t;
 
 // Demo: https://godbolt.org/z/ac3cPo94Y
-struct binary_expression_t {
-    binary_operator_t operator_type = binary_operator_t::none;
+typedef struct arithmetic_expression {
+    arithmetic_operator operator_type = arithmetic_operator::none;
     operands_t operands = {};
 
     auto operator()() const
         -> std::expected<std::int32_t, std::errc>
     {
-        const auto& [x, y] = operands;
+        const auto& [lhs, rhs] = operands;
 
         switch (operator_type) {
-        case binary_operator_t::multiply:
-            return (x * y);
-        case binary_operator_t::none:
+        case arithmetic_operator::multiply:
+            return (lhs * rhs);
+        case arithmetic_operator::none:
         default:
             return std::unexpected(std::errc::operation_not_supported);
         }
     }
-};
+} arithmetic_expression_t;
 
-auto extract_expression(std::string_view input)
-    -> binary_expression_t
+template<typename TValue>
+bool try_parse(std::string_view string_value, TValue& out_result) {
+    // Implicit conversion from `std::from_chars_result` to `bool` requires C++26 standard.
+    if (not std::from_chars(string_value.data(), string_value.data() + string_value.size(), out_result))
+    {
+        return false;
+    }
+    return true;
+}
+
+auto parse_expression(std::string_view expression)
+    -> std::optional<arithmetic_expression_t>
 {
+    static const auto regex = std::regex(R"((\w+)\((\d+),(\d+)\))");
+    std::cmatch match;
+
+    if (not std::regex_match(expression.data(), match, regex)) {
+        return std::nullopt;
+    }
+
+    std::int32_t lhs;
+    if (not try_parse(match[1].str(), lhs)) {
+        return std::nullopt;
+    }
+
+    std::int32_t rhs;
+    if (not try_parse(match[2].str(), rhs)) {
+        return std::nullopt;
+    }
+
+    const auto operator_name = match[0].str();
+    return arithmetic_expression_t {
+        .operator_type = "mul" == operator_name
+            ? arithmetic_operator::multiply
+            : arithmetic_operator::none,
+        .operands = {
+            .lhs = lhs,
+            .rhs = rhs,
+        },
+    };
+}
+
+auto extract_expressions(std::string_view input)
+    -> std::vector<arithmetic_expression_t>
+{
+    static constexpr std::size_t max_expression_size = 7uz;
     static constexpr std::string_view key = "mul("sv;
+
+    auto raw_expressions = std::vector<std::string_view>();
 
     std::size_t pos = 0uz;
     while ((pos = input.find(key, pos)) < std::string_view::npos)
     {
-        std::println("Found from {} to {}\n", pos + 1, pos + key.size() + 1);
-        pos = input.find(key, pos + key.size());
+        const std::size_t start = (pos + key.length());
 
-        /**
-         * 1. Store a collection of the indexes where `mul(` occurrences END.
-         *      Each entry signals the START of a possible expression.
-         * 2. For each START index, iterate over the string until either:
-         *      a) We step outside the bounds of the string.
-         *      b) We go over the maximum number of iterations (7).
-         *          "It does that with instructions like mul(X,Y), where X and Y are each 1-3 digit numbers"
-         *          2 (operands) * 3 (max len each) + 1 (comma) = 7 max
-         *      c) A `)` token is found.
-         * 3. After iterating, if a `)` token was found, we have an EXPRESSION -> store it.
-         *      Store it as a slice (std::span<std::string_view::value_type>) to avoid further allocations.
-         * 4. For each EXPRESSION, attempt to extract and parse both operands.
-         *      a) If successful, we have a VALID EXPRESSION.
-         *      b) Otherwise, discard it.
-         * 5. For each VALID EXPRESSION, evaluate it.
-         *      Creating a new instance of `binary_expression_t` with both operands and
-         *      the operator, then invoke its function call operator overload.
-        */
+        std::size_t i = start, count = 0uz;
+        while (
+            i < input.size() and
+            count < max_expression_size and
+            input[i] != ')'
+        )
+        { ++i; ++count; }
+
+        if (')' == input[i]) {
+            const auto end = start - pos + count + 1;
+            raw_expressions.emplace_back(input.substr(pos, end));
+        }
+
+        pos = start;
     }
 
-    return {};
+    auto valid_expressions = raw_expressions
+        | std::views::transform(parse_expression)
+        | std::views::filter([](const auto& expr) { return expr.has_value(); })
+        | std::views::transform([](const auto& expr) { return expr.value(); })
+        | std::ranges::to<std::vector>();
+    
+    return valid_expressions;
 }
 
 auto aoc2024::solve_a(std::istream& input_stream) -> void {
+
+    std::int32_t sum = 0;
     for (std::string line{}; std::getline(input_stream, line, '\n') and line != ""; ) {
-        extract_expression(line);
+        const auto expressions = extract_expressions(line);
+
+        const auto results = expressions
+            | std::views::transform([](const auto& expr) { return expr(); })
+            | std::views::transform([](const auto& result) { return result.value_or(0); })
+            | std::ranges::to<std::vector>();
+
+        sum += std::accumulate(results.begin(), results.end(), 0, std::plus<int>());
     }
+
+    std::println("{}", sum);
 }
 
 auto aoc2024::solve_b(std::istream& input_stream) -> void {
