@@ -65,34 +65,55 @@ bool try_parse(std::string_view string_value, TValue& out_result) {
     return true;
 }
 
+auto string_split(std::string_view string, char separator)
+    -> std::vector<std::string_view>
+{
+    const auto parts = string
+        | std::views::split(separator)
+        | std::ranges::to<std::vector>();
+
+    auto result = std::vector<std::string_view>();
+    for (const auto& part : parts) {
+        result.emplace_back(part.data());
+    }
+
+    return result;
+}
+
 auto parse_expression(std::string_view expression)
     -> std::optional<expression_t>
 {
-    static const auto regex = std::regex(R"(^(\w+)\((\d+),(\d+)\)$)");
-    std::cmatch match;
+    constexpr static auto EXPRESSION_START_TOKEN_SIZE   = "mul("sv.size();
+    constexpr static auto EXPRESSION_END_TOKEN_SIZE     = ")"sv.size();
 
-    if (not std::regex_match(expression.data(), expression.data() + expression.size(), match, regex)) {
+    if (not expression.starts_with("mul("sv) or not expression.ends_with(')')) {
+        return std::nullopt;
+    }
+
+    expression.remove_prefix(EXPRESSION_START_TOKEN_SIZE);
+    expression.remove_suffix(EXPRESSION_END_TOKEN_SIZE);
+
+    const auto parts = string_split(expression, ',');
+    
+    if (parts.size() < 2) {
         return std::nullopt;
     }
 
     std::int32_t lhs;
-    if (not try_parse(match[2].str(), lhs)) {
+    if (not try_parse(parts[0], lhs)) {
         return std::nullopt;
     }
 
     std::int32_t rhs;
-    if (not try_parse(match[3].str(), rhs)) {
+    if (not try_parse(parts[1], rhs)) {
         return std::nullopt;
     }
 
-    const auto operator_name = match[1].str();
     return expression_t {
-        .operator_type = "mul" == operator_name
-            ? operator_t::multiply
-            : operator_t::none,
+        .operator_type = operator_t::multiply,
         .operands = {
             .lhs = lhs,
-            .rhs = rhs,
+            .rhs = rhs
         },
     };
 }
