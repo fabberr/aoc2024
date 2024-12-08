@@ -25,7 +25,7 @@ using namespace std::string_view_literals;
 
 static constexpr std::size_t AOC_INPUT_SIZE = 6uz;
 
-enum class operator_type : char {
+enum class operator_t : char {
     none = '\0',
     multiply = '*',
 };
@@ -37,7 +37,7 @@ typedef struct operands {
 
 // Demo: https://godbolt.org/z/ac3cPo94Y
 typedef struct expression {
-    operator_type operator_type = operator_type::none;
+    operator_t operator_type = operator_t::none;
     operands_t operands = {};
 
     auto operator()() const
@@ -46,9 +46,9 @@ typedef struct expression {
         const auto& [lhs, rhs] = operands;
 
         switch (operator_type) {
-        case operator_type::multiply:
+        case operator_t::multiply:
             return (lhs * rhs);
-        case operator_type::none:
+        case operator_t::none:
         default:
             return std::unexpected(std::errc::operation_not_supported);
         }
@@ -88,8 +88,8 @@ auto parse_expression(std::string_view expression)
     const auto operator_name = match[1].str();
     return expression_t {
         .operator_type = "mul" == operator_name
-            ? operator_type::multiply
-            : operator_type::none,
+            ? operator_t::multiply
+            : operator_t::none,
         .operands = {
             .lhs = lhs,
             .rhs = rhs,
