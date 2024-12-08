@@ -25,7 +25,7 @@ using namespace std::string_view_literals;
 
 static constexpr std::size_t AOC_INPUT_SIZE = 6uz;
 
-enum class arithmetic_operator : char {
+enum class operator_type : char {
     none = '\0',
     multiply = '*',
 };
@@ -36,8 +36,8 @@ typedef struct operands {
 } operands_t;
 
 // Demo: https://godbolt.org/z/ac3cPo94Y
-typedef struct arithmetic_expression {
-    arithmetic_operator operator_type = arithmetic_operator::none;
+typedef struct expression {
+    operator_type operator_type = operator_type::none;
     operands_t operands = {};
 
     auto operator()() const
@@ -46,14 +46,14 @@ typedef struct arithmetic_expression {
         const auto& [lhs, rhs] = operands;
 
         switch (operator_type) {
-        case arithmetic_operator::multiply:
+        case operator_type::multiply:
             return (lhs * rhs);
-        case arithmetic_operator::none:
+        case operator_type::none:
         default:
             return std::unexpected(std::errc::operation_not_supported);
         }
     }
-} arithmetic_expression_t;
+} expression_t;
 
 template<typename TValue>
 bool try_parse(std::string_view string_value, TValue& out_result) {
@@ -66,30 +66,30 @@ bool try_parse(std::string_view string_value, TValue& out_result) {
 }
 
 auto parse_expression(std::string_view expression)
-    -> std::optional<arithmetic_expression_t>
+    -> std::optional<expression_t>
 {
-    static const auto regex = std::regex(R"((\w+)\((\d+),(\d+)\))");
+    static const auto regex = std::regex(R"(^(\w+)\((\d+),(\d+)\)$)");
     std::cmatch match;
 
-    if (not std::regex_match(expression.data(), match, regex)) {
+    if (not std::regex_match(expression.data(), expression.data() + expression.size(), match, regex)) {
         return std::nullopt;
     }
 
     std::int32_t lhs;
-    if (not try_parse(match[1].str(), lhs)) {
+    if (not try_parse(match[2].str(), lhs)) {
         return std::nullopt;
     }
 
     std::int32_t rhs;
-    if (not try_parse(match[2].str(), rhs)) {
+    if (not try_parse(match[3].str(), rhs)) {
         return std::nullopt;
     }
 
-    const auto operator_name = match[0].str();
-    return arithmetic_expression_t {
+    const auto operator_name = match[1].str();
+    return expression_t {
         .operator_type = "mul" == operator_name
-            ? arithmetic_operator::multiply
-            : arithmetic_operator::none,
+            ? operator_type::multiply
+            : operator_type::none,
         .operands = {
             .lhs = lhs,
             .rhs = rhs,
@@ -98,7 +98,7 @@ auto parse_expression(std::string_view expression)
 }
 
 auto extract_expressions(std::string_view input)
-    -> std::vector<arithmetic_expression_t>
+    -> std::vector<expression_t>
 {
     static constexpr std::size_t max_expression_size = 7uz;
     static constexpr std::string_view key = "mul("sv;
